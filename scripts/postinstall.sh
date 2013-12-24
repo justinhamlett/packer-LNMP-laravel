@@ -55,6 +55,9 @@ apt-get -y install puppet=3.3.0-1puppetlabs1
 apt-get -y remove linux-headers-$(uname -r)
 apt-get -y autoremove
 
+# Start Puppet
+service puppet start
+
 # Removing leftover leases and persistent rules
 echo "cleaning up dhcp leases"
 rm /var/lib/dhcp/*

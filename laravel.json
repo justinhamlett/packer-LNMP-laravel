@@ -21,8 +21,7 @@
         "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
         "ssh_password": "vagrant",
         "ssh_port": 22,
-        "ssh_username": "laravel",
-        "ssh_key_path": "ssh/vagrant",
+        "ssh_username": "vagrant",
         "ssh_wait_timeout": "20m",
         "vboxmanage": [
             [
@@ -61,8 +60,7 @@
         "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
         "ssh_password": "vagrant",
         "ssh_port": 22,
-        "ssh_username": "laravel",
-        "ssh_key_path": "ssh/vagrant",
+        "ssh_username": "vagrant",
         "ssh_wait_timeout": "20m",
         "tools_upload_flavor": "linux",
         "tools_upload_path": "VMWareTools.iso",
@@ -83,15 +81,10 @@
             }
         },
         "scripts": ["scripts/postinstall.sh"]
-    },
-    {
-      "type": "file",
-      "source": "ssh/vagrant.pub",
-      "destination": "/tmp/vagrant.pub"
     }],
     "post-processors": [{
         "type": "vagrant",
-        "output": "skim-vm-{{.Provider}}.box",
+        "output": "vagrant-laravel-{{.Provider}}.box",
         "vagrantfile_template": "packer/post_processing/Vagrantfile.template"
     }]
 }
