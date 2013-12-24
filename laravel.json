@@ -1,0 +1,97 @@
+{
+    "builders": [{
+        "type": "virtualbox",
+        "boot_command": [
+            "<esc><esc><enter><wait>",
+            "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+            "hostname={{ .Name }} ",
+            "fb=false debconf/frontend=noninteractive ",
+            "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            "initrd=/install/initrd.gz -- <enter>"
+        ],
+        "boot_wait": "5s",
+        "disk_size": 10000,
+        "guest_os_type": "Ubuntu_64",
+        "headless": true,
+        "http_directory": "preseed",
+        "iso_checksum": "61d5e67c70d97b33c13537461a0b153b41304ef412bb0e9d813bb157068c3c65",
+        "iso_checksum_type": "sha256",
+        "iso_url": "http://releases.ubuntu.com/12.04/ubuntu-12.04.3-server-amd64.iso",
+        "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+        "ssh_password": "vagrant",
+        "ssh_port": 22,
+        "ssh_username": "laravel",
+        "ssh_key_path": "ssh/vagrant",
+        "ssh_wait_timeout": "20m",
+        "vboxmanage": [
+            [
+                "modifyvm",
+                "{{.Name}}",
+                "--memory",
+                "1024"
+            ],
+            [
+                "modifyvm",
+                "{{.Name}}",
+                "--cpus",
+                "2"
+            ]
+        ]
+    }, {
+        "type": "vmware",
+        "boot_command": [
+            "<esc><esc><enter><wait>",
+            "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+            "hostname={{ .Name }} ",
+            "fb=false debconf/frontend=noninteractive ",
+            "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            "initrd=/install/initrd.gz -- <enter>"
+        ],
+        "boot_wait": "5s",
+        "disk_size": 10000,
+        "disk_type_id": "2",
+        "guest_os_type": "ubuntu-64",
+        "headless": true,
+        "http_directory": "preseed",
+        "iso_checksum": "61d5e67c70d97b33c13537461a0b153b41304ef412bb0e9d813bb157068c3c65",
+        "iso_checksum_type": "sha256",
+        "iso_url": "http://releases.ubuntu.com/12.04/ubuntu-12.04.3-server-amd64.iso",
+        "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+        "ssh_password": "vagrant",
+        "ssh_port": 22,
+        "ssh_username": "laravel",
+        "ssh_key_path": "ssh/vagrant",
+        "ssh_wait_timeout": "20m",
+        "tools_upload_flavor": "linux",
+        "tools_upload_path": "VMWareTools.iso",
+        "vmx_data": {
+            "cpuid.coresPerSocket": "1",
+            "memsize": "1024",
+            "numvcpus": "2"
+        }
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "override": {
+            "virtualbox": {
+                "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'"
+            },
+            "vmware": {
+                "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'"
+            }
+        },
+        "scripts": ["scripts/postinstall.sh"]
+    },
+    {
+      "type": "file",
+      "source": "ssh/vagrant.pub",
+      "destination": "/tmp/vagrant.pub"
+    }],
+    "post-processors": [{
+        "type": "vagrant",
+        "output": "skim-vm-{{.Provider}}.box",
+        "vagrantfile_template": "packer/post_processing/Vagrantfile.template"
+    }]
+}
